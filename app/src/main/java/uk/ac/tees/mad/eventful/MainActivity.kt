@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import uk.ac.tees.mad.eventful.ui.LoginScreen
 import uk.ac.tees.mad.eventful.ui.SplashScreen
 import uk.ac.tees.mad.eventful.ui.theme.EventfulTheme
 
@@ -16,13 +17,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             EventfulTheme {
-
                 val navController = rememberNavController()
 
                 NavHost(navController = navController, startDestination = "splash") {
                     composable("splash") { SplashScreen(navController) }
-                    composable("login") { }
-                    composable("home") { }
+                    composable("login") { LoginScreen(navController) }
+                    composable("home") {  }
                 }
             }
         }
