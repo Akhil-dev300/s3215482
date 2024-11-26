@@ -15,23 +15,34 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 
 @Composable
-fun RegisterScreen(navController: NavController) {
-
+fun RegisterScreen(navController: NavController, viewModel: AuthenticationViewModel = viewModel()) {
+    val authState by viewModel.authState
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    LaunchedEffect(authState) {
+        if (authState == "home") {
+            navController.navigate("home") {
+                popUpTo("login") { inclusive = true }
+            }
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -58,7 +69,7 @@ fun RegisterScreen(navController: NavController) {
                 visualTransformation = PasswordVisualTransformation()
             )
             OutlinedButton(
-                onClick = { },
+                onClick = { viewModel.registerUser(email, password) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
@@ -69,6 +80,10 @@ fun RegisterScreen(navController: NavController) {
             TextButton(onClick = { navController.popBackStack() }) {
                 Text("Already have an account? Login")
             }
+            if (authState != null && authState != "home") {
+                Text(authState ?: "", color = Color.Red, fontSize = 12.sp)
+            }
         }
+
     }
 }

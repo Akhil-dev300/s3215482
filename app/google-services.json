@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "387931403386",
+    "project_id": "eventful-a745b",
+    "storage_bucket": "eventful-a745b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:387931403386:android:e07d0714fe526c81d437c3",
+        "android_client_info": {
+          "package_name": "uk.ac.tees.mad.eventful"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7V-uHsz1jz8D41OJ0hosgYn07ZpWsQ_c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
