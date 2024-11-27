@@ -4,9 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import uk.ac.tees.mad.eventful.ui.CreateEventScreen
 import uk.ac.tees.mad.eventful.ui.HomeScreen
 import uk.ac.tees.mad.eventful.ui.LoginScreen
 import uk.ac.tees.mad.eventful.ui.RegisterScreen
@@ -19,14 +23,21 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             EventfulTheme {
-                val navController = rememberNavController()
-
-                NavHost(navController = navController, startDestination = "splash") {
-                    composable("splash") { SplashScreen(navController) }
-                    composable("login") { LoginScreen(navController) }
-                    composable("register") { RegisterScreen(navController) }
-                    composable("home") { HomeScreen(navController) }
+                Scaffold { innerPadding ->
+                    val navController = rememberNavController()
+                    NavHost(
+                        navController = navController,
+                        startDestination = "splash",
+                        modifier = Modifier.padding(innerPadding)
+                    ) {
+                        composable("splash") { SplashScreen(navController) }
+                        composable("login") { LoginScreen(navController) }
+                        composable("register") { RegisterScreen(navController) }
+                        composable("home") { HomeScreen(navController) }
+                        composable("create_event") { CreateEventScreen(navController) }
+                    }
                 }
+
             }
         }
     }

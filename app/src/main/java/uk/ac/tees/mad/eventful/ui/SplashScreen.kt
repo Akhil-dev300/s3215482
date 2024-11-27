@@ -16,6 +16,8 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -34,10 +36,10 @@ fun SplashScreen(navController: NavController) {
                 easing = { OvershootInterpolator(2f).getInterpolation(it) }
             )
         )
-
+        val firebase = Firebase.auth.currentUser
         delay(2000)
         withContext(Dispatchers.Main) {
-            navController.navigate("login") {
+            navController.navigate(if (firebase != null) "home" else "login") {
                 popUpTo("splash") { inclusive = true }
             }
         }
