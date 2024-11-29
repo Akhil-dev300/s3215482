@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.runtime.livedata)
 
     implementation("androidx.navigation:navigation-compose:2.8.4")
 
@@ -79,6 +80,7 @@ dependencies {
 
     implementation("com.google.android.gms:play-services-location:21.3.0")
 
+    implementation("com.google.accompanist:accompanist-permissions:0.33.1-alpha")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

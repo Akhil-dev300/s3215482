@@ -1,5 +1,6 @@
 package uk.ac.tees.mad.eventful.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -16,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -27,17 +29,37 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun CreateEventScreen(navController: NavController) {
+fun CreateEventScreen(
+    navController: NavController,
+    viewModel: CreateEventViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
     var eventName by remember { mutableStateOf("") }
     var eventDescription by remember { mutableStateOf("") }
     var eventDate by remember { mutableStateOf("") }
     var eventTime by remember { mutableStateOf("") }
-    var eventLocation by remember { mutableStateOf("") }
+    val currentLocation by viewModel.currentLocation.observeAsState("")
 
     val context = LocalContext.current
+    val locationPermissionState = rememberPermissionState(
+        android.Manifest.permission.ACCESS_FINE_LOCATION
+    ) {
+        if (it) {
+            viewModel.fetchCurrentLocation(context)
+        }
+    }
 
+    val isEventCreated by viewModel.isEventCreated.observeAsState(false)
+    if (isEventCreated) {
+        Toast.makeText(context, "Event created successfully!", Toast.LENGTH_SHORT).show()
+        navController.popBackStack()
+        viewModel.resetEventCreationState()
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -94,15 +116,21 @@ fun CreateEventScreen(navController: NavController) {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             TextField(
-                value = eventLocation,
-                onValueChange = { eventLocation = it },
+                value = currentLocation,
+                onValueChange = { viewModel.updateLocation(it) },
                 label = { Text("Event Location") },
                 modifier = Modifier.weight(1f),
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
 
             )
             Button(
-                onClick = { },
+                onClick = {
+                    if (locationPermissionState.status.isGranted) {
+                        viewModel.fetchCurrentLocation(context)
+                    } else {
+                        locationPermissionState.launchPermissionRequest()
+                    }
+                },
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier.fillMaxHeight()
             ) {
@@ -112,7 +140,13 @@ fun CreateEventScreen(navController: NavController) {
 
         Button(
             onClick = {
-
+                viewModel.createEvent(
+                    eventName,
+                    eventDescription,
+                    eventDate,
+                    eventTime,
+                    currentLocation
+                )
             },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
