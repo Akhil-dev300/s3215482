@@ -39,4 +39,11 @@ class HomeViewmodel : ViewModel() {
                 }
             }
     }
+
+    fun searchEvents(query: String) {
+        val allEvents = _events.value ?: return
+        _filteredEvents.value = allEvents.filter {
+            it.name.contains(query, ignoreCase = true) || it.date.contains(query)
+        }
+    }
 }

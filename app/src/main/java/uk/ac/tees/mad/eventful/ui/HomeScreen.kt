@@ -12,20 +12,30 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -35,7 +45,8 @@ import uk.ac.tees.mad.eventful.data.models.Event
 @Composable
 fun HomeScreen(navController: NavController, viewmodel: HomeViewmodel = viewModel()) {
     val events by viewmodel.filteredEvents.observeAsState(emptyList())
-
+    var searchQuery by remember { mutableStateOf("") }
+    val focusManager = LocalFocusManager.current
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -54,6 +65,19 @@ fun HomeScreen(navController: NavController, viewmodel: HomeViewmodel = viewMode
                     color = Color.Black,
                     modifier = Modifier.padding(bottom = 12.dp)
                 )
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = {
+                        searchQuery = it
+                        viewmodel.searchEvents(it)
+                    },
+                    label = { Text("Search by name or date") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    shape = RoundedCornerShape(8.dp)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
             }
             items(events) { event ->
                 EventCard(event)
@@ -76,6 +100,7 @@ fun HomeScreen(navController: NavController, viewmodel: HomeViewmodel = viewMode
 fun EventCard(event: Event) {
     ElevatedCard(
         shape = RoundedCornerShape(8.dp),
+        elevation = CardDefaults.elevatedCardElevation(4.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(
