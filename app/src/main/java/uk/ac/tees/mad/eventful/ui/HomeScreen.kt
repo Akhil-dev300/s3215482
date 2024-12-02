@@ -80,7 +80,9 @@ fun HomeScreen(navController: NavController, viewmodel: HomeViewmodel = viewMode
                 Spacer(modifier = Modifier.height(16.dp))
             }
             items(events) { event ->
-                EventCard(event)
+                EventCard(event) {
+                    navController.navigate("event_detail/${event.id}")
+                }
             }
         }
         FloatingActionButton(
@@ -97,8 +99,9 @@ fun HomeScreen(navController: NavController, viewmodel: HomeViewmodel = viewMode
 }
 
 @Composable
-fun EventCard(event: Event) {
+fun EventCard(event: Event, click: () -> Unit) {
     ElevatedCard(
+        onClick = { click() },
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.elevatedCardElevation(4.dp),
         modifier = Modifier.fillMaxWidth()
