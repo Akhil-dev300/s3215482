@@ -46,7 +46,7 @@ import uk.ac.tees.mad.eventful.data.models.Event
 fun HomeScreen(navController: NavController, viewmodel: HomeViewmodel = viewModel()) {
     val events by viewmodel.filteredEvents.observeAsState(emptyList())
     var searchQuery by remember { mutableStateOf("") }
-    val focusManager = LocalFocusManager.current
+
     Box(
         modifier = Modifier
             .fillMaxSize()
