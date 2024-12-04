@@ -29,4 +29,16 @@ class EventDetailViewModel : ViewModel() {
                 Log.e("EventDetailViewModel", "Failed to fetch event details")
             }
     }
+
+    fun deleteEvent(eventId: String) {
+        firestore.collection("events")
+            .document(eventId)
+            .delete()
+            .addOnSuccessListener {
+                Log.d("EventDetailViewModel", "Event deleted successfully")
+            }
+            .addOnFailureListener {
+                Log.e("EventDetailViewModel", "Failed to delete event")
+            }
+    }
 }
