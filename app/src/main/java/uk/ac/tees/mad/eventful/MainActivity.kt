@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import uk.ac.tees.mad.eventful.ui.CreateEventScreen
+import uk.ac.tees.mad.eventful.ui.EditEventScreen
 import uk.ac.tees.mad.eventful.ui.EventDetailScreen
 import uk.ac.tees.mad.eventful.ui.HomeScreen
 import uk.ac.tees.mad.eventful.ui.LoginScreen
@@ -42,6 +43,14 @@ class MainActivity : ComponentActivity() {
                                 EventDetailScreen(eventId, navController)
                             }
                         }
+                        composable("edit_event/{eventId}") { backStackEntry ->
+                            val eventId = backStackEntry.arguments?.getString("eventId")
+                            if (eventId != null) {
+                                EditEventScreen(eventId, navController)
+                            }
+
+                        }
+
                     }
                 }
 
