@@ -40,7 +40,13 @@ class EditEventViewModel : ViewModel() {
     fun updateEvent(event: Event) {
         firestore.collection("events")
             .document(event.id)
-            .set(event)
+            .update(
+                "name", event.name,
+                "description", event.description,
+                "date", event.date,
+                "time", event.time,
+                "location", event.location
+            )
             .addOnSuccessListener {
                 Log.d("EditEventViewModel", "Event updated successfully")
             }

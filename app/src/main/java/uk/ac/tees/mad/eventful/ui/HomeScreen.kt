@@ -47,6 +47,8 @@ fun HomeScreen(navController: NavController, viewmodel: HomeViewmodel = viewMode
     val events by viewmodel.filteredEvents.observeAsState(emptyList())
     var searchQuery by remember { mutableStateOf("") }
 
+    viewmodel.fetchEvents()
+
     Box(
         modifier = Modifier
             .fillMaxSize()

@@ -23,21 +23,18 @@ class HomeViewmodel : ViewModel() {
 
     fun fetchEvents() {
         firestore.collection("events")
-            .orderBy("createdAt", Query.Direction.ASCENDING)
-            .addSnapshotListener { snapshot, e ->
-                if (e != null) {
-                    return@addSnapshotListener
+            .get()
+            .addOnSuccessListener {
+                val eventList = it.documents.mapNotNull { document ->
+                    document.toObject(Event::class.java)?.copy(id = document.id)
                 }
-
-                if (snapshot != null && !snapshot.isEmpty) {
-                    val eventList = snapshot.documents.mapNotNull { document ->
-                        document.toObject(Event::class.java)?.copy(id = document.id)
-                    }
-                    Log.d("HomeViewModel", "Event: ${eventList}")
-                    _events.value = eventList
-                    _filteredEvents.value = eventList
-                }
+                _events.value = eventList
+                _filteredEvents.value = eventList
             }
+            .addOnFailureListener {
+                Log.e("HomeViewmodel", "Failed to fetch events", it)
+            }
+
     }
 
     fun searchEvents(query: String) {

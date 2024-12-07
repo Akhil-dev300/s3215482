@@ -1,5 +1,9 @@
 package uk.ac.tees.mad.eventful.ui
 
+import android.Manifest
+import android.app.Activity
+import android.content.pm.PackageManager
+import android.os.Build
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,6 +20,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -28,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -53,7 +59,16 @@ fun CreateEventScreen(
             viewModel.fetchCurrentLocation(context)
         }
     }
+    val notificationPermission =
+        rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
 
+    LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (!notificationPermission.status.isGranted) {
+                notificationPermission.launchPermissionRequest()
+            }
+        }
+    }
     val isEventCreated by viewModel.isEventCreated.observeAsState(false)
     if (isEventCreated) {
         Toast.makeText(context, "Event created successfully!", Toast.LENGTH_SHORT).show()
@@ -145,7 +160,8 @@ fun CreateEventScreen(
                     eventDescription,
                     eventDate,
                     eventTime,
-                    currentLocation
+                    currentLocation,
+                    context
                 )
             },
             modifier = Modifier
