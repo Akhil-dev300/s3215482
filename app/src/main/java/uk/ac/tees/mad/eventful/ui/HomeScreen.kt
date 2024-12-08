@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +17,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
@@ -60,13 +62,6 @@ fun HomeScreen(navController: NavController, viewmodel: HomeViewmodel = viewMode
             modifier = Modifier.fillMaxSize()
         ) {
             item {
-                Text(
-                    text = "Upcoming Events",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black,
-                    modifier = Modifier.padding(bottom = 12.dp)
-                )
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = {
@@ -86,6 +81,16 @@ fun HomeScreen(navController: NavController, viewmodel: HomeViewmodel = viewMode
                     navController.navigate("event_detail/${event.id}")
                 }
             }
+        }
+        FloatingActionButton(
+            onClick = { navController.navigate("profile") },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp),
+            containerColor = Color(0xFF2196F3),
+            contentColor = Color.White
+        ) {
+            Icon(Icons.Default.Person, contentDescription = "Profile")
         }
         FloatingActionButton(
             onClick = { navController.navigate("create_event") },

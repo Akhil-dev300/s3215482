@@ -15,6 +15,7 @@ import uk.ac.tees.mad.eventful.ui.EditEventScreen
 import uk.ac.tees.mad.eventful.ui.EventDetailScreen
 import uk.ac.tees.mad.eventful.ui.HomeScreen
 import uk.ac.tees.mad.eventful.ui.LoginScreen
+import uk.ac.tees.mad.eventful.ui.ProfileScreen
 import uk.ac.tees.mad.eventful.ui.RegisterScreen
 import uk.ac.tees.mad.eventful.ui.SplashScreen
 import uk.ac.tees.mad.eventful.ui.theme.EventfulTheme
@@ -48,8 +49,8 @@ class MainActivity : ComponentActivity() {
                             if (eventId != null) {
                                 EditEventScreen(eventId, navController)
                             }
-
                         }
+                        composable("profile") { ProfileScreen(navController) }
 
                     }
                 }
