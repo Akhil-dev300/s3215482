@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -62,6 +61,14 @@ fun HomeScreen(navController: NavController, viewmodel: HomeViewmodel = viewMode
             modifier = Modifier.fillMaxSize()
         ) {
             item {
+
+                Text(
+                    text = "Upcoming Events",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
+                    modifier = Modifier.padding(bottom = 12.dp)
+                )
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = {
@@ -82,25 +89,27 @@ fun HomeScreen(navController: NavController, viewmodel: HomeViewmodel = viewMode
                 }
             }
         }
-        FloatingActionButton(
-            onClick = { navController.navigate("profile") },
+        Column(
             modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp),
-            containerColor = Color(0xFF2196F3),
-            contentColor = Color.White
+                .padding(16.dp)
+                .align(Alignment.BottomEnd),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Icon(Icons.Default.Person, contentDescription = "Profile")
-        }
-        FloatingActionButton(
-            onClick = { navController.navigate("create_event") },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp),
-            containerColor = Color(0xFF2196F3),
-            contentColor = Color.White
-        ) {
-            Icon(Icons.Default.Add, contentDescription = "Create Event")
+            FloatingActionButton(
+                onClick = { navController.navigate("profile") },
+                containerColor = Color(0xFF2196F3),
+                contentColor = Color.White
+            ) {
+                Icon(Icons.Default.Person, contentDescription = "Profile")
+            }
+            FloatingActionButton(
+                onClick = { navController.navigate("create_event") },
+
+                containerColor = Color(0xFF2196F3),
+                contentColor = Color.White
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Create Event")
+            }
         }
     }
 }

@@ -8,17 +8,20 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class ProfileViewModel : ViewModel() {
     private val firestore = FirebaseFirestore.getInstance()
-    private val userCollection = firestore.collection("users")
+
+    private val _userData = mutableStateOf<UserProfile?>(null)
+    val userData: State<UserProfile?> = _userData
 
     private val _isLoading = mutableStateOf(false)
     val isLoading: State<Boolean> = _isLoading
 
     fun fetchUserProfile(userId: String) {
         _isLoading.value = true
-        userCollection.document(userId).get()
+        firestore.collection("users").document(userId).get()
             .addOnSuccessListener { document ->
                 val user = document.toObject(UserProfile::class.java)
                 Log.d("ProfileViewModel", "User psrofile fetched: $user")
+                _userData.value = user
                 _isLoading.value = false
             }
             .addOnFailureListener {
@@ -32,5 +35,5 @@ class ProfileViewModel : ViewModel() {
 data class UserProfile(
     val name: String = "",
     val email: String = "",
-    val profileImage: String = "https://via.placeholder.com/150"
+    val profileImage: String = "https://robohash.org/user"
 )
