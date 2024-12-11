@@ -1,6 +1,8 @@
 package uk.ac.tees.mad.eventful.ui
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -30,6 +32,19 @@ class ProfileViewModel : ViewModel() {
             }
     }
 
+    fun updateUserProfile(context: Context, userId: String, userProfile: UserProfile) {
+        _isLoading.value = true
+        firestore.collection("users").document(userId).set(userProfile)
+            .addOnSuccessListener {
+                _userData.value = userProfile
+                Toast.makeText(context, "Profile updated successfully", Toast.LENGTH_SHORT).show()
+                _isLoading.value = false
+            }
+            .addOnFailureListener {
+                _isLoading.value = false
+                Log.e("ProfileViewModel", "Error updating user profile: ${it.message}")
+            }
+    }
 }
 
 data class UserProfile(

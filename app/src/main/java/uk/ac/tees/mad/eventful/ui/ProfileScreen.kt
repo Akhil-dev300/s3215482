@@ -21,6 +21,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,9 +50,12 @@ fun ProfileScreen(
 ) {
     val userData by viewModel.userData
     val isLoading by viewModel.isLoading
-    LaunchedEffect(Unit) {
+    val context = LocalContext.current
+
+    LaunchedEffect(userId) {
         viewModel.fetchUserProfile(userId)
     }
+
 
 
     if (isLoading) {
@@ -84,6 +89,15 @@ fun ProfileScreen(
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
                     )
+                    Spacer(modifier = Modifier.weight(1f))
+                    TextButton(onClick = {
+                        Firebase.auth.signOut()
+                        navController.navigate("login") {
+                            popUpTo(0)
+                        }
+                    }) {
+                        Text(text = "Logout", fontSize = 18.sp, color = Color.Red)
+                    }
                 }
                 // Profile Image
                 Image(
@@ -122,7 +136,7 @@ fun ProfileScreen(
                 Button(
                     onClick = {
                         val updatedUser = UserProfile(name, email, user.profileImage)
-                        //save
+                        viewModel.updateUserProfile(context, userId, updatedUser)
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
