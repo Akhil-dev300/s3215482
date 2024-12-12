@@ -6,5 +6,7 @@ data class Event(
     val description: String = "",
     val date: String = "",
     val time: String = "",
-    val location: String = ""
+    val location: String = "",
+    val uploadedByUid: String = "",
+    val uploadedByName: String = ""
 )

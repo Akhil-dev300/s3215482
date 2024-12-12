@@ -16,7 +16,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.location.LocationServices
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 import uk.ac.tees.mad.eventful.R
 
 class CreateEventViewModel : ViewModel() {
@@ -44,26 +46,33 @@ class CreateEventViewModel : ViewModel() {
         if (name.isBlank() || date.isBlank() || time.isBlank() || location.isBlank()) {
             return
         }
+        firestore.collection("users").document(Firebase.auth.currentUser?.uid!!)
+            .get().addOnSuccessListener { document ->
+                val user = document.toObject(UserProfile::class.java)
+                if (user != null) {
 
+                    val event = hashMapOf(
+                        "name" to name,
+                        "description" to description,
+                        "date" to date,
+                        "time" to time,
+                        "location" to location,
+                        "uploadedByUid" to Firebase.auth.currentUser?.uid,
+                        "uploadedByName" to user.name,
+                        "createdAt" to System.currentTimeMillis()
+                    )
 
-        val event = hashMapOf(
-            "name" to name,
-            "description" to description,
-            "date" to date,
-            "time" to time,
-            "location" to location,
-            "createdAt" to System.currentTimeMillis()
-        )
-
-        firestore.collection("events")
-            .add(event)
-            .addOnSuccessListener {
-                val combinedDateTimeString = "$date ${time}}"
-                showNotification(context, name, combinedDateTimeString, it.id)
-                _isEventCreated.value = true
-            }
-            .addOnFailureListener {
-                _isEventCreated.value = false
+                    firestore.collection("events")
+                        .add(event)
+                        .addOnSuccessListener {
+                            val combinedDateTimeString = "$date ${time}}"
+                            showNotification(context, name, combinedDateTimeString, it.id)
+                            _isEventCreated.value = true
+                        }
+                        .addOnFailureListener {
+                            _isEventCreated.value = false
+                        }
+                }
             }
     }
 
@@ -73,7 +82,8 @@ class CreateEventViewModel : ViewModel() {
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             if (location != null) {
                 val geocoder = Geocoder(context)
-                val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+                val addresses =
+                    geocoder.getFromLocation(location.latitude, location.longitude, 1)
                 if (!addresses.isNullOrEmpty()) {
                     val address = addresses[0]
                     val locationName = address.getAddressLine(0)
@@ -93,7 +103,13 @@ class CreateEventViewModel : ViewModel() {
         _isEventCreated.value = false
     }
 
-    fun showNotification(context: Context, eventName: String, eventTime: String, eventId: String) {
+    @SuppressLint("MissingPermission")
+    fun showNotification(
+        context: Context,
+        eventName: String,
+        eventTime: String,
+        eventId: String
+    ) {
         val notificationId = eventId.hashCode()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
