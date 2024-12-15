@@ -25,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -44,11 +45,13 @@ import androidx.navigation.NavController
 import uk.ac.tees.mad.eventful.data.models.Event
 
 @Composable
-fun HomeScreen(navController: NavController, viewmodel: HomeViewmodel = viewModel()) {
+fun HomeScreen(navController: NavController, viewmodel: HomeViewModel = viewModel()) {
     val events by viewmodel.filteredEvents.observeAsState(emptyList())
     var searchQuery by remember { mutableStateOf("") }
 
-    viewmodel.fetchEvents()
+    LaunchedEffect(true) {
+        viewmodel.syncEvents()
+    }
 
     Box(
         modifier = Modifier
