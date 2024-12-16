@@ -35,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -42,15 +43,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import uk.ac.tees.mad.eventful.NetworkUtils
 import uk.ac.tees.mad.eventful.data.models.Event
 
 @Composable
 fun HomeScreen(navController: NavController, viewmodel: HomeViewModel = viewModel()) {
     val events by viewmodel.filteredEvents.observeAsState(emptyList())
     var searchQuery by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
     LaunchedEffect(true) {
-        viewmodel.syncEvents()
+        if (NetworkUtils.isNetworkAvailable(context)) {
+            viewmodel.syncEvents()
+        } else {
+            viewmodel.loadEventsFromLocal()
+        }
     }
 
     Box(

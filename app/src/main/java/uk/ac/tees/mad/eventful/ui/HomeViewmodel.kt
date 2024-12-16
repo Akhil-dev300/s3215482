@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.launch
+import uk.ac.tees.mad.eventful.NetworkUtils
 import uk.ac.tees.mad.eventful.data.database.AppDatabase
 import uk.ac.tees.mad.eventful.data.models.Event
 
@@ -24,7 +25,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val filteredEvents: LiveData<List<Event>> = _filteredEvents
 
     init {
-        syncEvents()
+        if (NetworkUtils.isNetworkAvailable(application)) {
+            syncEvents()
+        } else {
+            loadEventsFromLocal()
+        }
     }
 
     fun syncEvents() {
@@ -48,7 +53,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             }
     }
 
-    private fun loadEventsFromLocal() {
+    fun loadEventsFromLocal() {
         viewModelScope.launch {
             eventDao.getAllEvents().observeForever { localEvents ->
                 _events.postValue(localEvents)
